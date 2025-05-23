@@ -5,12 +5,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alcohol & MPS Calculators</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --color-denim-50: #f1f7fe;
+            --color-denim-100: #e1edfd;
+            --color-denim-200: #bcd9fb;
+            --color-denim-300: #82bbf7;
+            --color-denim-400: #3f98f1;
+            --color-denim-500: #167ce1;
+            --color-denim-600: #095cb9;
+            --color-denim-700: #094c9b;
+            --color-denim-800: #0c4280;
+            --color-denim-900: #10386a;
+            --color-denim-950: #0a2447;
+        }
+
+        /* Tailwind-inspired utilities */
+        .flex {
+            display: flex;
+        }
+
+        .flex-1 {
+            flex: 1;
+        }
+
+        .space-x-2>*+* {
+            margin-left: 0.5rem;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .max-w-28rem {
+            max-width: 28rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-4xl {
+            font-size: 2.25rem;
+            line-height: 2.5rem;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+            line-height: 2rem;
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+
+        .text-[var\(--color-denim-700\)] {
+            color: var(--color-denim-700);
+        }
+
+        .text-[var\(--color-denim-900\)] {
+            color: var(--color-denim-900);
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .mt-8 {
+            margin-top: 2rem;
+        }
+
+        .p-2 {
+            padding: 0.5rem;
+        }
+
+        .px-2 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+
+        .py-1 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+        }
+
+        .p-4 {
+            padding: 1rem;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .list-disc {
+            list-style-type: disc;
+        }
+
+        .pl-5 {
+            padding-left: 1.25rem;
+        }
+
+        /* Custom styles */
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a202c, #2d3748);
-            color: #e2e8f0;
+            background: var(--color-denim-50);
+            color: var(--color-denim-900);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -19,7 +160,7 @@
         }
 
         .calculator-card {
-            background: #2d3748;
+            background: var(--color-denim-100);
             border-radius: 1rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 2rem;
@@ -28,12 +169,16 @@
             margin: 1rem;
         }
 
+        .input-row {
+            margin-bottom: 1rem;
+        }
+
         input,
         select {
-            background: #4a5568;
-            border: none;
+            background: var(--color-denim-50);
+            border: 1px solid var(--color-denim-300);
             border-radius: 0.5rem;
-            color: #e2e8f0;
+            color: var(--color-denim-900);
             padding: 0.75rem;
             width: 100%;
             margin-bottom: 1rem;
@@ -41,17 +186,37 @@
         }
 
         button {
-            background: #4c51bf;
+            background: var(--color-denim-500);
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--color-denim-50);
             cursor: pointer;
             transition: background 0.3s ease;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
         button:hover {
-            background: #5a67d8;
+            background: var(--color-denim-600);
+        }
+
+        .add-btn {
+            background: var(--color-denim-700);
+        }
+
+        .add-btn:hover {
+            background: var(--color-denim-800);
+        }
+
+        .clear-btn,
+        .clear-default-btn {
+            background: var(--color-denim-800);
+        }
+
+        .clear-btn:hover,
+        .clear-default-btn:hover {
+            background: var(--color-denim-900);
         }
 
         .delete-btn {
@@ -62,34 +227,26 @@
             background: #f56565;
         }
 
-        .clear-btn,
-        .clear-default-btn {
-            background: #718096;
-        }
-
-        .clear-btn:hover,
-        .clear-default-btn:hover {
-            background: #a0aec0;
-        }
-
         .default-btn {
-            background: #2b6cb0;
+            background: var(--color-denim-400);
         }
 
         .default-btn:hover {
-            background: #4299e1;
+            background: var(--color-denim-500);
         }
 
         .default-btn.active {
-            background: #63b3ed;
-            border-color: #ffffff;
+            background: var(--color-denim-300);
+            border-color: var(--color-denim-50);
         }
 
         .result {
-            background: #4a5568;
+            background: var(--color-denim-200);
             padding: 1rem;
             border-radius: 0.5rem;
             margin-top: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
         }
 
         .drink-list {
@@ -97,8 +254,9 @@
             overflow-y: auto;
             margin-top: 1rem;
             padding: 0.5rem;
-            background: #4a5568;
+            background: var(--color-denim-50);
             border-radius: 0.5rem;
+            border: 1px solid var(--color-denim-300);
         }
 
         .drink-item {
@@ -106,15 +264,25 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.5rem;
-            border-bottom: 1px solid #718096;
+            border-bottom: 1px solid var(--color-denim-300);
         }
 
-        .input-row {
-            margin-bottom: 1rem;
+        .drink-item:nth-child(odd) {
+            background: var(--color-denim-100);
+        }
+
+        .drink-item:nth-child(even) {
+            background: var(--color-denim-200);
+        }
+
+        .drink-counter {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            color: var(--color-denim-900);
         }
 
         .calculations-section {
-            background: #2d3748;
+            background: var(--color-denim-100);
             border-radius: 1rem;
             padding: 2rem;
             width: 100%;
@@ -132,6 +300,7 @@
 
             button {
                 padding: 0.5rem 1rem;
+                font-size: 1rem;
             }
         }
     </style>
@@ -139,9 +308,9 @@
 
 <body>
     <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-white">Alcohol & Muscle Protein Synthesis Calculators</h1>
-        <p class="text-gray-300 mt-2">Calculate alcohol consumption and its impact on muscle protein synthesis (based on
-            Parr et al., 2014).</p>
+        <h1 class="text-4xl font-bold text-[var(--color-denim-900)]">Alcohol & Muscle Protein Synthesis Calculators</h1>
+        <p class="text-[var(--color-denim-700)] mt-2">Calculate alcohol consumption and its impact on muscle protein
+            synthesis (based on Parr et al., 2014).</p>
     </div>
 
     <!-- Alcohol Consumption Calculator -->
@@ -157,11 +326,12 @@
         </div>
         <div class="flex space-x-2">
             <button onclick="calculateAlcohol()" class="flex-1">Calculate</button>
-            <button onclick="addDrink()" class="flex-1">+Add</button>
+            <button onclick="addDrink()" class="flex-1 add-btn">+Add</button>
             <button onclick="clearInputs()" class="flex-1 clear-btn">Clear</button>
         </div>
         <div id="alcohol-result" class="result hidden"></div>
         <div id="drink-list" class="drink-list hidden"></div>
+        <div id="drink-counter" class="drink-counter hidden"></div>
         <div id="total-alcohol" class="result hidden"></div>
     </div>
 
@@ -184,11 +354,6 @@
                     Default</button>
             </div>
         </div>
-        <div id="height-row" class="input-row hidden">
-            <label for="height" class="block text-sm font-medium mb-2">Height (cm, required for defaults)</label>
-            <input type="number" id="height" placeholder="e.g., 170 for male, 160 for female" min="0" step="0.1"
-                required>
-        </div>
         <div class="input-row">
             <label for="alcohol-grams" class="block text-sm font-medium mb-2">Alcohol Consumed (g)</label>
             <input type="number" id="alcohol-grams" placeholder="e.g., 14.58" min="0" step="0.1" required>
@@ -200,12 +365,16 @@
                 <option value="without-protein">Without Protein</option>
             </select>
         </div>
-        <button onclick="calculateMPS()" class="w-full">Calculate MPS Inhibition</button>
+        <div class="flex justify-center">
+            <button onclick="calculateMPS()" class="w-full">Calculate MPS Inhibition</button>
+        </div>
         <div id="mps-result" class="result hidden"></div>
     </div>
 
     <!-- Show Calculations Button and Section -->
-    <button onclick="toggleCalculations()" class="w-full max-w-28rem mb-4">Show Calculations</button>
+    <div class="flex justify-center">
+        <button onclick="toggleCalculations()" class="w-full max-w-28rem mb-4">Show Calculations</button>
+    </div>
     <div id="calculations-section" class="calculations-section hidden">
         <h2 class="text-2xl font-semibold mb-4">Calculations Used</h2>
         <h3 class="text-xl font-medium mb-2">Alcohol Consumption Calculator</h3>
@@ -218,7 +387,7 @@
         <ul class="list-disc pl-5 mb-2">
             <li>≤0.5 g/kg FFM: 0% (no significant effect)</li>
             <li>0.5–1.5 g/kg FFM: Linear interpolation to 24% (with 25g whey protein) or 37% (without protein)</li>
-            <li>&gt;1.5 g/kg FFM: 30% (with protein) or 45% (without protein)</li>
+            <li>>1.5 g/kg FFM: 30% (with protein) or 45% (without protein)</li>
         </ul>
         <p>Based on Parr et al., 2014 (PLOS ONE). Protein recommendation: Consume 25g whey protein post-exercise to
             mitigate inhibition.</p>
@@ -268,17 +437,21 @@
 
         function updateDrinkList() {
             const drinkListDiv = document.getElementById('drink-list');
+            const drinkCounterDiv = document.getElementById('drink-counter');
             if (drinks.length === 0) {
                 drinkListDiv.classList.add('hidden');
+                drinkCounterDiv.classList.add('hidden');
                 return;
             }
             drinkListDiv.classList.remove('hidden');
+            drinkCounterDiv.classList.remove('hidden');
             drinkListDiv.innerHTML = drinks.map((drink, index) => `
                 <div class="drink-item">
                     <span>${drink.volume} mL at ${drink.abv}%: ${drink.alcoholGrams.toFixed(2)} g</span>
                     <button class="delete-btn px-2 py-1 text-sm" onclick="deleteDrink(${index})">Delete</button>
                 </div>
             `).join('');
+            drinkCounterDiv.innerHTML = `Total Drinks: <strong>${drinks.length}</strong>`;
         }
 
         function updateTotalAlcohol() {
@@ -291,13 +464,9 @@
 
         function setDefaultBodyFat(gender) {
             const bodyFatInput = document.getElementById('body-fat');
-            const heightRow = document.getElementById('height-row');
             const maleButton = document.getElementById('male-default');
             const femaleButton = document.getElementById('female-default');
-
             bodyFatInput.value = gender === 'male' ? 20 : 30;
-            heightRow.classList.remove('hidden');
-
             if (gender === 'male') {
                 maleButton.classList.add('active');
                 femaleButton.classList.remove('active');
@@ -311,14 +480,9 @@
 
         function clearDefaultBodyFat() {
             const bodyFatInput = document.getElementById('body-fat');
-            const heightRow = document.getElementById('height-row');
-            const heightInput = document.getElementById('height');
             const maleButton = document.getElementById('male-default');
             const femaleButton = document.getElementById('female-default');
-
             bodyFatInput.value = '';
-            heightRow.classList.add('hidden');
-            heightInput.value = '';
             maleButton.classList.remove('active');
             femaleButton.classList.remove('active');
             activeDefaultButton = null;
@@ -327,16 +491,10 @@
         function calculateMPS() {
             const bodyWeight = parseFloat(document.getElementById('body-weight').value);
             const bodyFat = parseFloat(document.getElementById('body-fat').value) / 100;
-            const height = parseFloat(document.getElementById('height').value);
             const alcoholGrams = parseFloat(document.getElementById('alcohol-grams').value);
             const proteinIntake = document.getElementById('protein-intake').value;
-
             if (isNaN(bodyWeight) || isNaN(bodyFat) || isNaN(alcoholGrams)) {
                 alert('Please enter valid numbers for body weight, body fat percentage, and alcohol consumed.');
-                return;
-            }
-            if ((activeDefaultButton === 'male' || activeDefaultButton === 'female') && isNaN(height)) {
-                alert('Please enter your height when using default body fat percentages.');
                 return;
             }
             const ffm = bodyWeight * (1 - bodyFat);
