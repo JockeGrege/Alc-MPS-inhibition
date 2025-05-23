@@ -29,6 +29,10 @@
             flex: 1;
         }
 
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
         .space-x-2>*+* {
             margin-left: 0.5rem;
         }
@@ -233,17 +237,26 @@
             background: #f56565;
         }
 
-        .default-btn {
+        .default-btn,
+        .standard-btn {
             background: var(--color-denim-400);
         }
 
-        .default-btn:hover {
+        .default-btn:hover,
+        .standard-btn:hover {
             background: var(--color-denim-500);
         }
 
-        .default-btn.active {
+        .default-btn.active,
+        .standard-btn.active {
             background: var(--color-denim-300);
             border-color: var(--color-denim-50);
+        }
+
+        .standard-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            margin: 0.25rem;
         }
 
         .calculations-btn.active {
@@ -305,12 +318,18 @@
             .calculator-card,
             .calculations-section {
                 padding: 1.5rem;
-                margin: 0.5rem;
+                margin: 0.75rem;
             }
 
             button {
                 padding: 0.75rem 1rem;
                 font-size: 1rem;
+            }
+
+            .standard-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                margin: 0.25rem;
             }
         }
     </style>
@@ -329,10 +348,26 @@
         <div class="input-row">
             <label for="volume" class="block text-sm font-medium mb-2">Volume (mL)</label>
             <input type="number" id="volume" placeholder="e.g., 330 for 33cl" min="0" step="0.1" required>
+            <div class="flex flex-wrap space-x-2 mt-2">
+                <button onclick="setVolume(40)" class="standard-btn">40ml</button>
+                <button onclick="setVolume(60)" class="standard-btn">60ml</button>
+                <button onclick="setVolume(150)" class="standard-btn">150ml</button>
+                <button onclick="setVolume(200)" class="standard-btn">200ml</button>
+                <button onclick="setVolume(330)" class="standard-btn">330ml</button>
+                <button onclick="setVolume(500)" class="standard-btn">500ml</button>
+            </div>
         </div>
         <div class="input-row">
             <label for="abv" class="block text-sm font-medium mb-2">Alcohol by Volume (%)</label>
             <input type="number" id="abv" placeholder="e.g., 5.6" min="0" max="100" step="0.1" required>
+            <div class="flex flex-wrap space-x-2 mt-2">
+                <button onclick="setABV(4.5)" class="standard-btn">4.5%</button>
+                <button onclick="setABV(5)" class="standard-btn">5%</button>
+                <button onclick="setABV(5.6)" class="standard-btn">5.6%</button>
+                <button onclick="setABV(12.5)" class="standard-btn">12.5%</button>
+                <button onclick="setABV(14.5)" class="standard-btn">14.5%</button>
+                <button onclick="setABV(40)" class="standard-btn">40%</button>
+            </div>
         </div>
         <div class="flex space-x-2">
             <button onclick="calculateAlcohol()" class="flex-1">Calculate</button>
@@ -415,6 +450,14 @@
         let drinks = [];
         let totalAlcohol = 0;
         let activeDefaultButton = null;
+
+        function setVolume(value) {
+            document.getElementById('volume').value = value;
+        }
+
+        function setABV(value) {
+            document.getElementById('abv').value = value;
+        }
 
         function calculateAlcohol() {
             const volume = parseFloat(document.getElementById('volume').value);
