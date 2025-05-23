@@ -33,8 +33,8 @@
             flex-wrap: wrap;
         }
 
-        .space-x-2>*+* {
-            margin-left: 0.5rem;
+        .gap-2 {
+            gap: 0.5rem;
         }
 
         .w-full {
@@ -175,10 +175,14 @@
             width: 100%;
             max-width: 28rem;
             margin: 1rem;
+            text-align: center;
         }
 
         .input-row {
             margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         input,
@@ -189,6 +193,7 @@
             color: var(--color-denim-900);
             padding: 0.75rem;
             width: 100%;
+            max-width: 20rem;
             margin-bottom: 1rem;
             outline: none;
         }
@@ -272,18 +277,24 @@
             padding: 1rem;
             border-radius: 0.5rem;
             margin-top: 1rem;
+            margin-left: auto;
+            margin-right: auto;
             font-size: 1.1rem;
             font-weight: 500;
+            max-width: 20rem;
         }
 
         .drink-list {
             max-height: 150px;
             overflow-y: auto;
             margin-top: 1rem;
+            margin-left: auto;
+            margin-right: auto;
             padding: 0.5rem;
             background: var(--color-denim-50);
             border-radius: 0.5rem;
             border: 1px solid var(--color-denim-300);
+            max-width: 20rem;
         }
 
         .drink-item {
@@ -304,8 +315,11 @@
 
         .drink-counter {
             margin-top: 0.5rem;
+            margin-left: auto;
+            margin-right: auto;
             font-size: 1rem;
             color: var(--color-denim-900);
+            max-width: 20rem;
         }
 
         .calculations-section {
@@ -315,6 +329,7 @@
             width: 100%;
             max-width: 28rem;
             margin: 1rem;
+            text-align: center;
         }
 
         @media (max-width: 640px) {
@@ -354,7 +369,7 @@
         <div class="input-row">
             <label for="volume" class="block text-sm font-medium mb-2">Volume (mL)</label>
             <input type="number" id="volume" placeholder="e.g., 330 for 33cl" min="0" step="0.1" required>
-            <div class="flex flex-wrap space-x-2 mt-2">
+            <div class="flex flex-wrap justify-center gap-2 mt-2">
                 <button onclick="setVolume(40)" class="standard-btn">40ml</button>
                 <button onclick="setVolume(60)" class="standard-btn">60ml</button>
                 <button onclick="setVolume(150)" class="standard-btn">150ml</button>
@@ -366,7 +381,7 @@
         <div class="input-row">
             <label for="abv" class="block text-sm font-medium mb-2">Alcohol by Volume (%)</label>
             <input type="number" id="abv" placeholder="e.g., 5.6" min="0" max="100" step="0.1" required>
-            <div class="flex flex-wrap space-x-2 mt-2">
+            <div class="flex flex-wrap justify-center gap-2 mt-2">
                 <button onclick="setABV(4.5)" class="standard-btn">4.5%</button>
                 <button onclick="setABV(5)" class="standard-btn">5%</button>
                 <button onclick="setABV(5.6)" class="standard-btn">5.6%</button>
@@ -375,7 +390,7 @@
                 <button onclick="setABV(40)" class="standard-btn">40%</button>
             </div>
         </div>
-        <div class="flex space-x-2">
+        <div class="flex flex-wrap justify-center gap-2">
             <button onclick="calculateAlcohol()" class="flex-1">Calculate</button>
             <button onclick="addDrink()" class="flex-1 add-btn">Add Another</button>
             <button onclick="clearInputs()" class="flex-1 clear-btn">Clear</button>
@@ -392,7 +407,7 @@
         <div class="input-row">
             <label for="body-weight" class="block text-sm font-medium mb-2">Body Weight (kg)</label>
             <input type="number" id="body-weight" placeholder="e.g., 70" min="0" step="0.1" required>
-            <div class="flex flex-wrap space-x-2 mt-2">
+            <div class="flex flex-wrap justify-center gap-2 mt-2">
                 <button onclick="setWeight(50)" class="standard-btn">50kg</button>
                 <button onclick="setWeight(60)" class="standard-btn">60kg</button>
                 <button onclick="setWeight(70)" class="standard-btn">70kg</button>
@@ -404,7 +419,7 @@
         <div class="input-row">
             <label for="body-fat" class="block text-sm font-medium mb-2">Body Fat Percentage (%)</label>
             <input type="number" id="body-fat" placeholder="e.g., 20" min="0" max="100" step="0.1" required>
-            <div class="flex space-x-2 mt-2">
+            <div class="flex flex-wrap justify-center gap-2 mt-2">
                 <button id="male-default" onclick="setDefaultBodyFat('male')" class="flex-1 default-btn">Set Male
                     Default (20%)</button>
                 <button id="female-default" onclick="setDefaultBodyFat('female')" class="flex-1 default-btn">Set Female
@@ -425,7 +440,7 @@
             </select>
         </div>
         <div class="flex justify-center">
-            <button onclick="calculateMPS()" class="w-full">Calculate MPS Inhibition</button>
+            <button onclick="calculateMPS()" class="w-full max-w-20rem">Calculate MPS Inhibition</button>
         </div>
         <div id="mps-result" class="result hidden"></div>
     </div>
@@ -451,7 +466,7 @@
         <p class="mb-2">Fat-Free Mass (kg) = Body Weight (kg) × (1 - Body Fat % / 100)</p>
         <p class="mb-2">Alcohol Dose (g/kg FFM) = Total Alcohol Consumed (g) / Fat-Free Mass (kg)</p>
         <p class="mb-2">MPS Inhibition (%):</p>
-        <ul class="list-disc pl-5 mb-2">
+        <ul class="list-disc pl-5 mb-2 mx-auto" style="max-width: 20rem; text-align: left;">
             <li>≤0.5 g/kg FFM: 0% (no significant effect)</li>
             <li>0.5–1.5 g/kg FFM: Linear interpolation to 24% (with 25g whey protein) or 37% (without protein)</li>
             <li>>1.5 g/kg FFM: 30% (with protein) or 45% (without protein)</li>
