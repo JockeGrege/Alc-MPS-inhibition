@@ -65,11 +65,11 @@
             line-height: 1.25rem;
         }
 
-        .text-[var\(--color-denim-700\)] {
+        .text-\-\color-denim-700 {
             color: var(--color-denim-700);
         }
 
-        .text-[var\(--color-denim-900\)] {
+        .text-\-\color-denim-900 {
             color: var(--color-denim-900);
         }
 
@@ -192,7 +192,7 @@
             border-radius: 0.5rem;
             border: 2px solid var(--color-denim-50);
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, transform 0.1s ease;
             font-size: 1.1rem;
             font-weight: 600;
         }
@@ -201,21 +201,27 @@
             background: var(--color-denim-600);
         }
 
+        button:active {
+            transform: scale(0.95);
+        }
+
         .add-btn {
-            background: var(--color-denim-700);
+            background: var(--color-denim-500);
         }
 
         .add-btn:hover {
-            background: var(--color-denim-800);
+            background: var(--color-denim-600);
         }
 
         .clear-btn,
-        .clear-default-btn {
+        .clear-default-btn,
+        .reset-btn {
             background: var(--color-denim-800);
         }
 
         .clear-btn:hover,
-        .clear-default-btn:hover {
+        .clear-default-btn:hover,
+        .reset-btn:hover {
             background: var(--color-denim-900);
         }
 
@@ -290,6 +296,17 @@
             margin: 1rem;
         }
 
+        .fixed-button {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10;
+        }
+
+        .calculations-btn.active {
+            border-color: var(--color-denim-300);
+        }
+
         @media (max-width: 640px) {
 
             .calculator-card,
@@ -299,18 +316,31 @@
             }
 
             button {
-                padding: 0.5rem 1rem;
+                padding: 0.75rem 1rem;
                 font-size: 1rem;
+            }
+
+            .fixed-button {
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+
+            .calculations-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 
 <body>
+    <div class="fixed-button">
+        <button onclick="toggleCalculations()" class="calculations-btn">Show Calculations</button>
+    </div>
     <div class="text-center mb-8">
         <h1 class="text-4xl font-bold text-[var(--color-denim-900)]">Alcohol & Muscle Protein Synthesis Calculators</h1>
         <p class="text-[var(--color-denim-700)] mt-2">Calculate alcohol consumption and its impact on muscle protein
-            synthesis (based on <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3922864/">Parr et al., 2014</a>).</p>
+            synthesis (based on Parr et al., 2014).</p>
     </div>
 
     <!-- Alcohol Consumption Calculator -->
@@ -326,7 +356,7 @@
         </div>
         <div class="flex space-x-2">
             <button onclick="calculateAlcohol()" class="flex-1">Calculate</button>
-            <button onclick="addDrink()" class="flex-1 add-btn">+Add</button>
+            <button onclick="addDrink()" class="flex-1 add-btn">Add Another</button>
             <button onclick="clearInputs()" class="flex-1 clear-btn">Clear</button>
         </div>
         <div id="alcohol-result" class="result hidden"></div>
@@ -371,10 +401,12 @@
         <div id="mps-result" class="result hidden"></div>
     </div>
 
-    <!-- Show Calculations Button and Section -->
+    <!-- Reset All Button -->
     <div class="flex justify-center">
-        <button onclick="toggleCalculations()" class="w-full max-w-28rem mb-4">Show Calculations Used</button>
+        <button onclick="resetAll()" class="w-full max-w-28rem mb-4 reset-btn">Reset All</button>
     </div>
+
+    <!-- Calculations Section -->
     <div id="calculations-section" class="calculations-section hidden">
         <h2 class="text-2xl font-semibold mb-4">Calculations Used</h2>
         <h3 class="text-xl font-medium mb-2">Alcohol Consumption Calculator</h3>
@@ -404,12 +436,15 @@
             const density = 0.789;
             if (isNaN(volume) || isNaN(abv)) {
                 alert('Please enter valid numbers for volume and ABV.');
-                return;
+                return null;
             }
             const alcoholGrams = volume * abv * density;
             const resultDiv = document.getElementById('alcohol-result');
             resultDiv.innerHTML = `Alcohol in this drink: <strong>${alcoholGrams.toFixed(2)} g</strong>`;
             resultDiv.classList.remove('hidden');
+            if (drinks.length === 0) {
+                document.getElementById('alcohol-grams').value = alcoholGrams.toFixed(2);
+            }
             return alcoholGrams;
         }
 
@@ -427,6 +462,9 @@
             document.getElementById('volume').value = '';
             document.getElementById('abv').value = '';
             document.getElementById('alcohol-result').classList.add('hidden');
+            if (drinks.length === 0) {
+                document.getElementById('alcohol-grams').value = '';
+            }
         }
 
         function deleteDrink(index) {
@@ -523,7 +561,28 @@
 
         function toggleCalculations() {
             const calculationsSection = document.getElementById('calculations-section');
+            const calculationsButton = document.querySelector('.calculations-btn');
             calculationsSection.classList.toggle('hidden');
+            calculationsButton.classList.toggle('active');
+        }
+
+        function resetAll() {
+            drinks = [];
+            totalAlcohol = 0;
+            activeDefaultButton = null;
+            document.getElementById('volume').value = '';
+            document.getElementById('abv').value = '';
+            document.getElementById('body-weight').value = '';
+            document.getElementById('body-fat').value = '';
+            document.getElementById('alcohol-grams').value = '';
+            document.getElementById('protein-intake').value = 'with-protein';
+            document.getElementById('alcohol-result').classList.add('hidden');
+            document.getElementById('drink-list').classList.add('hidden');
+            document.getElementById('drink-counter').classList.add('hidden');
+            document.getElementById('total-alcohol').classList.add('hidden');
+            document.getElementById('mps-result').classList.add('hidden');
+            document.getElementById('male-default').classList.remove('active');
+            document.getElementById('female-default').classList.remove('active');
         }
     </script>
 </body>
