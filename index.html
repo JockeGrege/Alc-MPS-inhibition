@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alcohol & MPS Calculators</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .calculator-card {
+            background: #2d3748;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 28rem;
+            margin: 1rem;
+        }
+
+        input,
+        select {
+            background: #4a5568;
+            border: none;
+            border-radius: 0.5rem;
+            color: #e2e8f0;
+            padding: 0.75rem;
+            width: 100%;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+
+        button {
+            background: #4c51bf;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+
+        .delete-btn {
+            background: #e53e3e;
+        }
+
+        .delete-btn:hover {
+            background: #f56565;
+        }
+
+        .clear-btn,
+        .clear-default-btn {
+            background: #718096;
+        }
+
+        .clear-btn:hover,
+        .clear-default-btn:hover {
+            background: #a0aec0;
+        }
+
+        .default-btn {
+            background: #2b6cb0;
+        }
+
+        .default-btn:hover {
+            background: #4299e1;
+        }
+
+        .default-btn.active {
+            background: #63b3ed;
+            border-color: #ffffff;
+        }
+
+        .result {
+            background: #4a5568;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .drink-list {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background: #4a5568;
+            border-radius: 0.5rem;
+        }
+
+        .drink-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid #718096;
+        }
+
+        .input-row {
+            margin-bottom: 1rem;
+        }
+
+        .calculations-section {
+            background: #2d3748;
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 28rem;
+            margin: 1rem;
+        }
+
+        @media (max-width: 640px) {
+
+            .calculator-card,
+            .calculations-section {
+                padding: 1.5rem;
+                margin: 0.5rem;
+            }
+
+            button {
+                padding: 0.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-white">Alcohol & Muscle Protein Synthesis Calculators</h1>
+        <p class="text-gray-300 mt-2">Calculate alcohol consumption and its impact on muscle protein synthesis (based on
+            Parr et al., 2014).</p>
+    </div>
+
+    <!-- Alcohol Consumption Calculator -->
+    <div class="calculator-card">
+        <h2 class="text-2xl font-semibold mb-4">Alcohol Consumption Calculator</h2>
+        <div class="input-row">
+            <label for="volume" class="block text-sm font-medium mb-2">Volume (mL)</label>
+            <input type="number" id="volume" placeholder="e.g., 330 for 33cl" min="0" step="0.1" required>
+        </div>
+        <div class="input-row">
+            <label for="abv" class="block text-sm font-medium mb-2">Alcohol by Volume (%)</label>
+            <input type="number" id="abv" placeholder="e.g., 5.6" min="0" max="100" step="0.1" required>
+        </div>
+        <div class="flex space-x-2">
+            <button onclick="calculateAlcohol()" class="flex-1">Calculate</button>
+            <button onclick="addDrink()" class="flex-1">+Add</button>
+            <button onclick="clearInputs()" class="flex-1 clear-btn">Clear</button>
+        </div>
+        <div id="alcohol-result" class="result hidden"></div>
+        <div id="drink-list" class="drink-list hidden"></div>
+        <div id="total-alcohol" class="result hidden"></div>
+    </div>
+
+    <!-- MPS Inhibition Calculator -->
+    <div class="calculator-card">
+        <h2 class="text-2xl font-semibold mb-4">MPS Inhibition Calculator</h2>
+        <div class="input-row">
+            <label for="body-weight" class="block text-sm font-medium mb-2">Body Weight (kg)</label>
+            <input type="number" id="body-weight" placeholder="e.g., 70" min="0" step="0.1" required>
+        </div>
+        <div class="input-row">
+            <label for="body-fat" class="block text-sm font-medium mb-2">Body Fat Percentage (%)</label>
+            <input type="number" id="body-fat" placeholder="e.g., 20" min="0" max="100" step="0.1" required>
+            <div class="flex space-x-2 mt-2">
+                <button id="male-default" onclick="setDefaultBodyFat('male')" class="flex-1 default-btn">Set Male
+                    Default (20%)</button>
+                <button id="female-default" onclick="setDefaultBodyFat('female')" class="flex-1 default-btn">Set Female
+                    Default (30%)</button>
+                <button id="clear-default" onclick="clearDefaultBodyFat()" class="flex-1 clear-default-btn">Clear
+                    Default</button>
+            </div>
+        </div>
+        <div id="height-row" class="input-row hidden">
+            <label for="height" class="block text-sm font-medium mb-2">Height (cm, required for defaults)</label>
+            <input type="number" id="height" placeholder="e.g., 170 for male, 160 for female" min="0" step="0.1"
+                required>
+        </div>
+        <div class="input-row">
+            <label for="alcohol-grams" class="block text-sm font-medium mb-2">Alcohol Consumed (g)</label>
+            <input type="number" id="alcohol-grams" placeholder="e.g., 14.58" min="0" step="0.1" required>
+        </div>
+        <div class="input-row">
+            <label for="protein-intake" class="block text-sm font-medium mb-2">Protein Intake</label>
+            <select id="protein-intake">
+                <option value="with-protein">With 25g Whey Protein</option>
+                <option value="without-protein">Without Protein</option>
+            </select>
+        </div>
+        <button onclick="calculateMPS()" class="w-full">Calculate MPS Inhibition</button>
+        <div id="mps-result" class="result hidden"></div>
+    </div>
+
+    <!-- Show Calculations Button and Section -->
+    <button onclick="toggleCalculations()" class="w-full max-w-28rem mb-4">Show Calculations</button>
+    <div id="calculations-section" class="calculations-section hidden">
+        <h2 class="text-2xl font-semibold mb-4">Calculations Used</h2>
+        <h3 class="text-xl font-medium mb-2">Alcohol Consumption Calculator</h3>
+        <p class="mb-2">Alcohol (g) = Volume (mL) × (Alcohol by Volume (%) / 100) × 0.789 (density of ethanol)</p>
+        <p class="mb-2">Total Alcohol Consumed (g) = Sum of alcohol (g) from all added drinks</p>
+        <h3 class="text-xl font-medium mb-2">MPS Inhibition Calculator</h3>
+        <p class="mb-2">Fat-Free Mass (kg) = Body Weight (kg) × (1 - Body Fat % / 100)</p>
+        <p class="mb-2">Alcohol Dose (g/kg FFM) = Total Alcohol Consumed (g) / Fat-Free Mass (kg)</p>
+        <p class="mb-2">MPS Inhibition (%):</p>
+        <ul class="list-disc pl-5 mb-2">
+            <li>≤0.5 g/kg FFM: 0% (no significant effect)</li>
+            <li>0.5–1.5 g/kg FFM: Linear interpolation to 24% (with 25g whey protein) or 37% (without protein)</li>
+            <li>&gt;1.5 g/kg FFM: 30% (with protein) or 45% (without protein)</li>
+        </ul>
+        <p>Based on Parr et al., 2014 (PLOS ONE). Protein recommendation: Consume 25g whey protein post-exercise to
+            mitigate inhibition.</p>
+    </div>
+
+    <script>
+        let drinks = [];
+        let totalAlcohol = 0;
+        let activeDefaultButton = null;
+
+        function calculateAlcohol() {
+            const volume = parseFloat(document.getElementById('volume').value);
+            const abv = parseFloat(document.getElementById('abv').value) / 100;
+            const density = 0.789;
+            if (isNaN(volume) || isNaN(abv)) {
+                alert('Please enter valid numbers for volume and ABV.');
+                return;
+            }
+            const alcoholGrams = volume * abv * density;
+            const resultDiv = document.getElementById('alcohol-result');
+            resultDiv.innerHTML = `Alcohol in this drink: <strong>${alcoholGrams.toFixed(2)} g</strong>`;
+            resultDiv.classList.remove('hidden');
+            return alcoholGrams;
+        }
+
+        function addDrink() {
+            const alcoholGrams = calculateAlcohol();
+            if (!alcoholGrams) return;
+            const volume = parseFloat(document.getElementById('volume').value);
+            const abv = parseFloat(document.getElementById('abv').value);
+            drinks.push({ volume, abv, alcoholGrams });
+            updateDrinkList();
+            updateTotalAlcohol();
+        }
+
+        function clearInputs() {
+            document.getElementById('volume').value = '';
+            document.getElementById('abv').value = '';
+            document.getElementById('alcohol-result').classList.add('hidden');
+        }
+
+        function deleteDrink(index) {
+            drinks.splice(index, 1);
+            updateDrinkList();
+            updateTotalAlcohol();
+        }
+
+        function updateDrinkList() {
+            const drinkListDiv = document.getElementById('drink-list');
+            if (drinks.length === 0) {
+                drinkListDiv.classList.add('hidden');
+                return;
+            }
+            drinkListDiv.classList.remove('hidden');
+            drinkListDiv.innerHTML = drinks.map((drink, index) => `
+                <div class="drink-item">
+                    <span>${drink.volume} mL at ${drink.abv}%: ${drink.alcoholGrams.toFixed(2)} g</span>
+                    <button class="delete-btn px-2 py-1 text-sm" onclick="deleteDrink(${index})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function updateTotalAlcohol() {
+            totalAlcohol = drinks.reduce((sum, drink) => sum + drink.alcoholGrams, 0);
+            const totalDiv = document.getElementById('total-alcohol');
+            totalDiv.classList.toggle('hidden', drinks.length === 0);
+            totalDiv.innerHTML = `Total Alcohol Consumed: <strong>${totalAlcohol.toFixed(2)} g</strong>`;
+            document.getElementById('alcohol-grams').value = totalAlcohol.toFixed(2);
+        }
+
+        function setDefaultBodyFat(gender) {
+            const bodyFatInput = document.getElementById('body-fat');
+            const heightRow = document.getElementById('height-row');
+            const maleButton = document.getElementById('male-default');
+            const femaleButton = document.getElementById('female-default');
+
+            bodyFatInput.value = gender === 'male' ? 20 : 30;
+            heightRow.classList.remove('hidden');
+
+            if (gender === 'male') {
+                maleButton.classList.add('active');
+                femaleButton.classList.remove('active');
+                activeDefaultButton = 'male';
+            } else {
+                femaleButton.classList.add('active');
+                maleButton.classList.remove('active');
+                activeDefaultButton = 'female';
+            }
+        }
+
+        function clearDefaultBodyFat() {
+            const bodyFatInput = document.getElementById('body-fat');
+            const heightRow = document.getElementById('height-row');
+            const heightInput = document.getElementById('height');
+            const maleButton = document.getElementById('male-default');
+            const femaleButton = document.getElementById('female-default');
+
+            bodyFatInput.value = '';
+            heightRow.classList.add('hidden');
+            heightInput.value = '';
+            maleButton.classList.remove('active');
+            femaleButton.classList.remove('active');
+            activeDefaultButton = null;
+        }
+
+        function calculateMPS() {
+            const bodyWeight = parseFloat(document.getElementById('body-weight').value);
+            const bodyFat = parseFloat(document.getElementById('body-fat').value) / 100;
+            const height = parseFloat(document.getElementById('height').value);
+            const alcoholGrams = parseFloat(document.getElementById('alcohol-grams').value);
+            const proteinIntake = document.getElementById('protein-intake').value;
+
+            if (isNaN(bodyWeight) || isNaN(bodyFat) || isNaN(alcoholGrams)) {
+                alert('Please enter valid numbers for body weight, body fat percentage, and alcohol consumed.');
+                return;
+            }
+            if ((activeDefaultButton === 'male' || activeDefaultButton === 'female') && isNaN(height)) {
+                alert('Please enter your height when using default body fat percentages.');
+                return;
+            }
+            const ffm = bodyWeight * (1 - bodyFat);
+            const alcoholDose = alcoholGrams / ffm;
+            let inhibition;
+            if (alcoholDose <= 0.5) {
+                inhibition = 0;
+            } else if (alcoholDose <= 1.5) {
+                const factor = (alcoholDose - 0.5) / 1.0;
+                inhibition = proteinIntake === 'with-protein' ? factor * 24 : factor * 37;
+            } else {
+                inhibition = proteinIntake === 'with-protein' ? 30 : 45;
+            }
+            const proteinRecommendation = proteinIntake === 'with-protein'
+                ? 'You consumed 25g of whey protein, which helps mitigate MPS inhibition.'
+                : 'Consume 25g of whey protein post-exercise to reduce MPS inhibition.';
+            const resultDiv = document.getElementById('mps-result');
+            resultDiv.innerHTML = `
+                <p>Estimated Fat-Free Mass: <strong>${ffm.toFixed(2)} kg</strong></p>
+                <p>Alcohol Dose: <strong>${alcoholDose.toFixed(2)} g/kg FFM</strong></p>
+                <p>MPS Inhibition: <strong>${inhibition.toFixed(1)}%</strong></p>
+                <p>${proteinRecommendation}</p>
+            `;
+            resultDiv.classList.remove('hidden');
+        }
+
+        function toggleCalculations() {
+            const calculationsSection = document.getElementById('calculations-section');
+            calculationsSection.classList.toggle('hidden');
+        }
+    </script>
+</body>
+
+</html>
