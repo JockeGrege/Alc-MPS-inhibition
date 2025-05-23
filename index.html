@@ -151,6 +151,10 @@
             padding-left: 1.25rem;
         }
 
+        .underline {
+            text-decoration: underline;
+        }
+
         /* Custom styles */
         body {
             font-family: 'Inter', sans-serif;
@@ -254,8 +258,8 @@
         }
 
         .standard-btn {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
             margin: 0.25rem;
         }
 
@@ -327,8 +331,8 @@
             }
 
             .standard-btn {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
+                padding: 0.3rem 0.6rem;
+                font-size: 0.7rem;
                 margin: 0.25rem;
             }
         }
@@ -337,14 +341,16 @@
 
 <body>
     <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-[var(--color-denim-900)]">Alcohol & Muscle Protein Synthesis Calculators</h1>
-        <p class="text-[var(--color-denim-700)] mt-2">Calculate alcohol consumption and its impact on muscle protein
-            synthesis (based on Parr et al., 2014).</p>
+        <h1 class="text-4xl font-bold text-color-denim-900">Alcohol & Muscle Protein Synthesis Calculators</h1>
+        <p class="text-color-denim-700 mt-2">Calculate alcohol consumption and its impact on muscle protein synthesis
+            (based on <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3922864/" target="_blank" class="underline">Parr
+                et al., 2014</a>).</p>
     </div>
 
     <!-- Alcohol Consumption Calculator -->
     <div class="calculator-card">
-        <h2 class="text-2xl font-semibold mb-4">Alcohol Consumption Calculator</h2>
+        <h2 class="text-2xl font-semibold mb-4 text-color-denim-900" onclick="scrollToTotalAlcohol()">Alcohol
+            Consumption Calculator</h2>
         <div class="input-row">
             <label for="volume" class="block text-sm font-medium mb-2">Volume (mL)</label>
             <input type="number" id="volume" placeholder="e.g., 330 for 33cl" min="0" step="0.1" required>
@@ -382,10 +388,18 @@
 
     <!-- MPS Inhibition Calculator -->
     <div class="calculator-card">
-        <h2 class="text-2xl font-semibold mb-4">MPS Inhibition Calculator</h2>
+        <h2 class="text-2xl font-semibold mb-4 text-color-denim-900">MPS Inhibition Calculator</h2>
         <div class="input-row">
             <label for="body-weight" class="block text-sm font-medium mb-2">Body Weight (kg)</label>
             <input type="number" id="body-weight" placeholder="e.g., 70" min="0" step="0.1" required>
+            <div class="flex flex-wrap space-x-2 mt-2">
+                <button onclick="setWeight(50)" class="standard-btn">50kg</button>
+                <button onclick="setWeight(60)" class="standard-btn">60kg</button>
+                <button onclick="setWeight(70)" class="standard-btn">70kg</button>
+                <button onclick="setWeight(80)" class="standard-btn">80kg</button>
+                <button onclick="setWeight(90)" class="standard-btn">90kg</button>
+                <button onclick="setWeight(100)" class="standard-btn">100kg</button>
+            </div>
         </div>
         <div class="input-row">
             <label for="body-fat" class="block text-sm font-medium mb-2">Body Fat Percentage (%)</label>
@@ -429,7 +443,7 @@
 
     <!-- Calculations Section -->
     <div id="calculations-section" class="calculations-section hidden">
-        <h2 class="text-2xl font-semibold mb-4">Calculations Used</h2>
+        <h2 class="text-2xl font-semibold mb-4 text-color-denim-900">Calculations Used</h2>
         <h3 class="text-xl font-medium mb-2">Alcohol Consumption Calculator</h3>
         <p class="mb-2">Alcohol (g) = Volume (mL) × (Alcohol by Volume (%) / 100) × 0.789 (density of ethanol)</p>
         <p class="mb-2">Total Alcohol Consumed (g) = Sum of alcohol (g) from all added drinks</p>
@@ -442,8 +456,9 @@
             <li>0.5–1.5 g/kg FFM: Linear interpolation to 24% (with 25g whey protein) or 37% (without protein)</li>
             <li>>1.5 g/kg FFM: 30% (with protein) or 45% (without protein)</li>
         </ul>
-        <p>Based on Parr et al., 2014 (PLOS ONE). Protein recommendation: Consume 25g whey protein post-exercise to
-            mitigate inhibition.</p>
+        <p>Based on <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3922864/" target="_blank" class="underline">Parr
+                et al., 2014</a>. Protein recommendation: Consume 25g whey protein post-exercise to mitigate inhibition.
+        </p>
     </div>
 
     <script>
@@ -457,6 +472,10 @@
 
         function setABV(value) {
             document.getElementById('abv').value = value;
+        }
+
+        function setWeight(value) {
+            document.getElementById('body-weight').value = value;
         }
 
         function calculateAlcohol() {
@@ -527,6 +546,13 @@
             totalDiv.classList.toggle('hidden', drinks.length === 0);
             totalDiv.innerHTML = `Total Alcohol Consumed: <strong>${totalAlcohol.toFixed(2)} g</strong>`;
             document.getElementById('alcohol-grams').value = totalAlcohol.toFixed(2);
+        }
+
+        function scrollToTotalAlcohol() {
+            const totalDiv = document.getElementById('total-alcohol');
+            if (!totalDiv.classList.contains('hidden')) {
+                totalDiv.scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
         function setDefaultBodyFat(gender) {
