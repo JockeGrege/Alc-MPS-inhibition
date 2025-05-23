@@ -1,4 +1,4 @@
-# Alc-MPS-inhibition
+# Alcohol & Muscle Protein Synthesis Calculators
 Alcohol & Muscle Protein Synthesis Calculators
 
 A modern, responsive web application to calculate total alcohol consumed (grams) from beverages and estimate muscle protein synthesis (MPS) inhibition based on alcohol dose and protein intake, using findings from Parr et al. (2014, PLOS ONE, link).
